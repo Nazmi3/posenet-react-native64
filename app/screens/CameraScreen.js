@@ -8,8 +8,9 @@ import * as tf from '@tensorflow/tfjs';
 import { cameraWithTensors } from '@tensorflow/tfjs-react-native';
 
 import * as posenet from '@tensorflow-models/posenet';
+import * as blazeface from '@tensorflow-models/blazeface';
 
-
+const TensorCamera = cameraWithTensors(Camera);
 
 const inputTensorWidth = 152;
 const inputTensorHeight = 200;
@@ -27,27 +28,40 @@ export default function CameraScreen() {
 
     useEffect(() => {
         let isMounted = true;
-        // if (Platform.OS === 'ios') {
-        //     setTextureDims({ height: 1920, width: 1080, })
+        if (Platform.OS === 'ios') {
+            setTextureDims({ height: 1920, width: 1080, })
       
-        //   } else {
-        //     setTextureDims({ height: 1200, width: 1600, })
-        //   }
+          } else {
+            setTextureDims({ height: 1200, width: 1600, })
+          }
 
          (async () => {
             await tf.ready().then((tf) => { 
                 setLoaded(true);
-                posenet.load().then((model) => {
-                    console.log('useEffect...posenet load', model)
-                    // if (isMounted.current) {
-                    //   setModel(model);
-                    // }
-                  });
+                loadBlazefaceModel()
+                loadPosenetModel()
                 });
             // await tf.setbackend()
 
              
     })();
+
+     const loadPosenetModel = async () => {
+      const model =  await posenet.load({
+        architecture: 'MobileNetV1',
+        outputStride: 16,
+        inputResolution: { width: inputTensorWidth, height: inputTensorHeight },
+        multiplier: 0.75,
+        quantBytes: 2
+      });
+      console.log('loadPosenetModel....model', model)
+      return model;
+    }
+  
+    const loadBlazefaceModel = async () => {
+      const model =  await blazeface.load();
+      return model;
+    }
 
          
         // await tf.ready().then((tf) => {
@@ -68,7 +82,69 @@ export default function CameraScreen() {
     //     return <Text>No access to camera</Text>;
     //   }
 
-    
+    const handleImageTensorReady = (tensors) => {
+      console.log('tensors.handleImageTensorReady.', tensors);
+      if (!tensors) {
+        console.log('Image not found!');
+      }
+      
+    //   images: IterableIterator<tf.Tensor3D>;
+    //   updatePreview: () => void, gl: ExpoWebGLRenderingContext) {
+    //   const loop = async () => {
+    //     const {modelName} = this.state;
+    //     if(!AUTORENDER) {
+    //       updatePreview();
+    //     }
+  
+    //     if(modelName === 'posenet') {
+    //       if (this.state.posenetModel != null) {
+    //         const imageTensor = images.next().value;
+    //         const flipHorizontal = Platform.OS === 'ios' ? false : true;
+    //         const pose = await this.state.posenetModel.estimateSinglePose(
+    //           imageTensor, { flipHorizontal });
+    //         this.setState({pose});
+    //         tf.dispose([imageTensor]);
+    //       }
+    //     } else {
+    //       if (this.state.faceDetector != null) {
+    //         const imageTensor = images.next().value;
+    //         const returnTensors = false;
+    //         const faces = await this.state.faceDetector.estimateFaces(
+    //           imageTensor, returnTensors);
+  
+    //         this.setState({faces});
+    //         tf.dispose(imageTensor);
+    //       }
+    //     }
+  
+    //     if(!AUTORENDER) {
+    //       gl.endFrameEXP();
+    //     }
+    //     this.rafID = requestAnimationFrame(loop);
+    //   };
+  
+    //   loop();
+    // }
+  }
+  
+    const camView = () => {
+      return ( 
+          <TensorCamera
+            // Standard Camera props
+            style={styles.camera}
+            type={Camera.Constants.Type.back}
+            zoom={0}
+            // tensor related props
+            cameraTextureHeight={textureDims.height}
+            cameraTextureWidth={textureDims.width}
+            resizeHeight={inputTensorHeight}
+            resizeWidth={inputTensorWidth}
+            resizeDepth={3}
+            onReady={tensors => handleImageTensorReady(tensors)}
+            autorender={true}
+          />
+      )
+    }
 
     if (!isLoaded) {
         return (
@@ -83,7 +159,8 @@ export default function CameraScreen() {
     else {
         return (
             <View style={styles.container}>
-          <Camera style={styles.camera} type={type}>
+              {camView()}
+          {/* <Camera style={styles.camera} type={type}>
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 style={styles.button}
@@ -97,7 +174,7 @@ export default function CameraScreen() {
                 <Text style={styles.text}> Flip </Text>
               </TouchableOpacity>
             </View>
-          </Camera>
+          </Camera> */}
         </View>
         )
     }
