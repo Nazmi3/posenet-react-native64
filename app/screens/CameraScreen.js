@@ -65,16 +65,9 @@ export default function CameraScreen() {
     }
 
          
-        // await tf.ready().then((tf) => {
-        //     console.log('tf...', tf)
-        //     if (isMounted) {
-        //         setLoaded(true);
-        //     }
-        // });
-        // (async () => {
-        //   const { status } = await Camera.requestPermissionsAsync();
-        //   setHasPermission(status === 'granted');
-        // })();
+    setTimeout(() => {
+      setLoaded(true);
+    }, 5000);
     }, []);
     //   if (hasPermission === null) {
     //     return <View />;
