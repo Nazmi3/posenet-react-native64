@@ -17,7 +17,6 @@ const inputTensorHeight = 200;
 
 const AUTORENDER = true;
 
-
 export default function CameraScreen() {
     const [hasPermission, setHasPermission] = useState(null);
   const [useCamera2, setUseCamera2] = useState(false);
