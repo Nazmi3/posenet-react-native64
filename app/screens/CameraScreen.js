@@ -20,6 +20,7 @@ const AUTORENDER = true;
 
 export default function CameraScreen() {
     const [hasPermission, setHasPermission] = useState(null);
+  const [useCamera2, setUseCamera2] = useState(false);
     const [type, setType] = useState(Camera.Constants.Type.back);
     const [isLoaded, setLoaded] = React.useState(false);
 
@@ -54,12 +55,12 @@ export default function CameraScreen() {
         multiplier: 0.75,
         quantBytes: 2
       });
-      console.log('loadPosenetModel....model', model)
+      setUseCamera2(false);
       return model;
     }
   
     const loadBlazefaceModel = async () => {
-      const model =  await blazeface.load();
+      setUseCamera2(true);
       return model;
     }
 
@@ -159,8 +160,7 @@ export default function CameraScreen() {
     else {
         return (
             <View style={styles.container}>
-              {camView()}
-          {/* <Camera style={styles.camera} type={type}>
+            useCamera2Api={useCamera2}
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 style={styles.button}
