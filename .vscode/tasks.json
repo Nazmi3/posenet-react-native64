@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "command":"react-native run-android",
+            "label": "build",
+            "problemMatcher":{
+                "owner": "custom",
+                "pattern":{
+                    "regexp": "____",
+                },
+                "background": {"activeOnStart": true,
+            "beginsPattern":"BUILD SUCCESSFUL",
+            "endsPattern":"BUILD SUCCESSFUL"
+        }
+            },
+            "isBackground": true
+        }
+    ]
+}
