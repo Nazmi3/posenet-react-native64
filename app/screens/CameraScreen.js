@@ -1,14 +1,26 @@
-import React, { Component, useState, useEffect } from 'react'
-import { StyleSheet, View, Image, ActivityIndicator, TouchableOpacity, ImageBackground, InteractionManager, Text, Linking, Platform, SafeAreaView, BackHandler, StatusBar, Alert } from 'react-native';
-import AsyncStorage from '@react-native-community/async-storage'
-import { ScaledSheet } from "react-native-size-matters";
-import { Camera } from 'expo-camera';
-
-import * as tf from '@tensorflow/tfjs';
-import { cameraWithTensors } from '@tensorflow/tfjs-react-native';
-
-import * as posenet from '@tensorflow-models/posenet';
-import * as blazeface from '@tensorflow-models/blazeface';
+import React, {Component, useState, useEffect, useRef} from 'react';
+import {
+  StyleSheet,
+  View,
+  Image,
+  ActivityIndicator,
+  TouchableOpacity,
+  ImageBackground,
+  InteractionManager,
+  Text,
+  Linking,
+  Platform,
+  SafeAreaView,
+  BackHandler,
+  StatusBar,
+  Alert,
+} from 'react-native';
+import {ScaledSheet} from 'react-native-size-matters';
+import {Camera} from 'expo-camera';
+import {ready, dispose, loadGraphModel, getBackend} from '@tensorflow/tfjs';
+import {cameraWithTensors} from '@tensorflow/tfjs-react-native';
+import Tts from 'react-native-tts';
+// import '@tensorflow/tfjs-backend-webgl';
 
 const TensorCamera = cameraWithTensors(Camera);
 
